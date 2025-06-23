@@ -26,7 +26,7 @@ const bookSchema = new Schema<IBook, BookStaticMethods>({
     isbn: {
         type: String,
         required: [true, 'ISBN is required'],
-        unique: [true, 'ISBN matched, Give unique ISBN']
+        unique: true
     },
     description: {
         type: String,
@@ -61,5 +61,14 @@ bookSchema.static('borrowBook', async function (bookId: string, quantity: number
     await book.save();
     return book;
 })
+
+bookSchema.pre('save', function (next) {
+    console.log(`Book "${this.title}" is being saved...`);
+    next();
+})
+
+bookSchema.post("save", function (doc) {
+  console.log(`Book "${doc.title}" has been saved successfully.`);
+});
 
 export const Book = model<IBook, BookStaticMethods>('Book', bookSchema);
