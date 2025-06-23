@@ -11,5 +11,5 @@ export interface IBook {
 }
 
 export interface BookStaticMethods extends Model<IBook>{
-    borrowBook(bookId: string, quantity: number): void
+    borrowBook(bookId: string, quantity: number): Promise<void>
 }
