@@ -1,9 +1,9 @@
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import { Book } from '../models/book.model';
 
 export const bookRoutes = express.Router();
 
-bookRoutes.post('/', async (req: Request, res: Response) => {
+bookRoutes.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = req.body;
         const book = await Book.create(data);
@@ -14,16 +14,12 @@ bookRoutes.post('/', async (req: Request, res: Response) => {
             data: book
         })
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: "Validation failed",
-            error
-        })
+        next(error)
     }
 
 })
 
-bookRoutes.get('/', async (req: Request, res: Response) => {
+bookRoutes.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { filter,
             sortBy = "createdAt",
@@ -45,16 +41,12 @@ bookRoutes.get('/', async (req: Request, res: Response) => {
             data: books
         })
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: "Validation failed",
-            error
-        })
+        next(error)
     }
 
 })
 
-bookRoutes.get('/:bookId', async (req: Request, res: Response) => {
+bookRoutes.get('/:bookId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.bookId;
         const book = await Book.findById(id)
@@ -65,16 +57,12 @@ bookRoutes.get('/:bookId', async (req: Request, res: Response) => {
             data: book
         })
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: "Validation failed",
-            error
-        })
+        next(error)
     }
 
 })
 
-bookRoutes.put('/:bookId', async (req: Request, res: Response) => {
+bookRoutes.put('/:bookId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.bookId;
         const updateData = req.body;
@@ -86,16 +74,12 @@ bookRoutes.put('/:bookId', async (req: Request, res: Response) => {
             data: book
         })
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: "Validation failed",
-            error
-        })
+        next(error)
     }
 
 })
 
-bookRoutes.delete('/:bookId', async (req: Request, res: Response) => {
+bookRoutes.delete('/:bookId', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.bookId;
         const book = await Book.findByIdAndDelete(id)
@@ -106,11 +90,7 @@ bookRoutes.delete('/:bookId', async (req: Request, res: Response) => {
             data: null
         })
     } catch (error: any) {
-        res.status(400).json({
-            success: false,
-            message: "Validation failed",
-            error
-        })
+        next(error)
     }
 
 })

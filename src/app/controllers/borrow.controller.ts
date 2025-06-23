@@ -1,10 +1,10 @@
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import { Borrow } from '../models/borrow.model';
 import { Book } from '../models/book.model';
 
 export const borrowRoutes = express.Router();
 
-borrowRoutes.post('/', async (req: Request, res: Response) => {
+borrowRoutes.post('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = req.body;
         await Book.borrowBook(data.book, data.quantity)
@@ -16,15 +16,11 @@ borrowRoutes.post('/', async (req: Request, res: Response) => {
             data: borrow
         })
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: 'Validation failed',
-            error
-        })
+        next(error)
     }
 })
 
-borrowRoutes.get('/', async (req: Request, res: Response) => {
+borrowRoutes.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         const borrow = await Borrow.find();
@@ -35,10 +31,6 @@ borrowRoutes.get('/', async (req: Request, res: Response) => {
             data: borrow
         })
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: "Validation failed",
-            error
-        })
+        next(error)
     }
 })
