@@ -23,7 +23,37 @@ borrowRoutes.post('/', async (req: Request, res: Response, next: NextFunction) =
 borrowRoutes.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const borrow = await Borrow.find();
+        const borrow = await Borrow.aggregate([
+            {
+                $lookup: {
+                    from: "books",
+                    localField: "book",
+                    foreignField: "_id",
+                    as: "bookData"
+
+                }
+            },
+            {
+                $unwind: "$bookData"
+            },
+            {
+                $group: {
+                    _id: "$book",
+                    totalQuantity: { $sum: "$quantity" },
+                    book: {$first: "$bookData"}
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    book: {
+                        title: "$book.title",
+                        isbn: "$book.isbn"
+                    },
+                    totalQuantity: 1
+                }
+            }
+        ]);
 
         res.status(201).json({
             success: true,
