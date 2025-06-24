@@ -9,12 +9,12 @@ app.use('/api/books', bookRoutes);
 app.use('/api/borrow', borrowRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!, Welcome to Library Management System')
-})
+  res.send('Hello World!, Welcome to Library Management System');
+});
 
 app.use((req: Request, res: Response) => {
-  res.status(404).json({ message: "Route not fount" })
-})
+  res.status(404).json({ message: 'Route not fount' });
+});
 
 app.use(((error: any, req: Request, res: Response, next: NextFunction) => {
   if (error.name === 'ValidationError') {
